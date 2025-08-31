@@ -1,0 +1,1 @@
+"""Features package - vertical slice architecture for business capabilities"""
