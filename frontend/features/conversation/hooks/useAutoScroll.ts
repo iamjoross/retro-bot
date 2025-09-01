@@ -4,7 +4,9 @@ export const useAutoScroll = <T extends HTMLElement = HTMLDivElement>() => {
   const scrollRef = useRef<T>(null);
 
   const scrollToBottom = useCallback(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
   }, []);
 
   return { scrollRef, scrollToBottom };

@@ -28,7 +28,7 @@ export default function TerminalCard({
           </div>
         </div>
       )}
-      <div className="p-6">{children}</div>
+      <div className="p-6 overflow-auto">{children}</div>
     </div>
   );
 }

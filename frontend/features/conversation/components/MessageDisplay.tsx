@@ -12,15 +12,15 @@ export const MessageDisplay = forwardRef<HTMLDivElement, MessageDisplayProps>(
     return (
       <div className="flex-1 overflow-hidden">
         <TerminalCard className="h-full flex flex-col" statusIndicator={true}>
-          <div className="flex-1 overflow-y-auto font-mono text-sm space-y-3 pr-2 max-h-full message-container">
-            <div className="min-h-full flex flex-col justify-end">
-              <div className="space-y-3">
-                {messages.map((message, index) => (
-                  <MessageItem key={index} message={message} />
-                ))}
-                {isLoading && <LoadingIndicator />}
-              </div>
-              <div ref={ref} />
+          <div 
+            className="flex-1 overflow-y-auto font-mono text-sm space-y-3 pr-2 max-h-full message-container"
+            ref={ref}
+          >
+            <div className="space-y-3 pb-4">
+              {messages.map((message, index) => (
+                <MessageItem key={index} message={message} />
+              ))}
+              {isLoading && <LoadingIndicator />}
             </div>
           </div>
         </TerminalCard>
