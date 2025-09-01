@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+/* Import retro terminal styles */
+@import './retro.css';
