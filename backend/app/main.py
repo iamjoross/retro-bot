@@ -23,14 +23,14 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("🚀 Starting Assistant API with DATACOM-7")
+    logger.info("Starting Assistant API with DATACOM-7")
     await connect_to_mongo()
-    logger.info("✅ MongoDB connection established")
+    logger.info("MongoDB connection established")
     yield
     # Shutdown
-    logger.info("🔄 Shutting down Assistant API")
+    logger.info("Shutting down Assistant API")
     await close_mongo_connection()
-    logger.info("✅ MongoDB connection closed")
+    logger.info("MongoDB connection closed")
 
 
 app = FastAPI(
