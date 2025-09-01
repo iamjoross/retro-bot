@@ -16,9 +16,9 @@ export const API_CONFIG = {
 
   // Request timeouts (in milliseconds)
   TIMEOUTS: {
-    DEFAULT: 10000,
-    CHAT: 30000, // Longer timeout for chat responses
-    UPLOAD: 60000,
+    DEFAULT: 30000,
+    CHAT: 60000, // Longer timeout for chat responses
+    UPLOAD: 120000,
   },
 
   // Retry configuration
