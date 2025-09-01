@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     # Database Configuration
     MONGODB_URL: str = "mongodb://localhost:27017"
     DATABASE_NAME: str = "assistant"
+    MONGO_ROOT_USERNAME: str = "admin"
+    MONGO_ROOT_PASSWORD: str = "password"
 
     # Logging Configuration
     LOG_LEVEL: str = "INFO"
