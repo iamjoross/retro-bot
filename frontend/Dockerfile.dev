@@ -1,0 +1,23 @@
+FROM node:18-alpine
+
+# Enable corepack for modern yarn
+RUN corepack enable
+
+# Install dependencies for native modules
+RUN apk add --no-cache libc6-compat
+
+# Set working directory
+WORKDIR /app
+
+# Copy all package files first
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn .yarn
+
+# Install dependencies with proper state
+RUN corepack enable yarn && yarn install --immutable
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
