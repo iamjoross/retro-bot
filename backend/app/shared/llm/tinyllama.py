@@ -174,57 +174,57 @@ class TinyLlamaLLM:
             return "[ERROR] Model generation failed"
 
     def _clean_response(self, raw_response: str) -> str:
-        """Clean up model response - extract just the assistant's part"""
+        """Clean up model response - extract ONLY the assistant's actual response"""
         if not raw_response or not raw_response.strip():
             return ""
 
         response = raw_response.strip()
         
-        # Remove conversation formatting artifacts more aggressively
-        # Split by any dialogue marker (case-insensitive) and take the first part
-        dialogue_markers = ['USER:', 'User:', 'ASSISTANT:', 'Assistant:', 'HUMAN:', 'Human:']
-        
-        for marker in dialogue_markers:
-            if marker in response:
-                parts = response.split(marker)
-                first_part = parts[0].strip()
-                if first_part:
-                    response = first_part
-                    break
-        
-        # Also handle quotes that might contain dialogue
-        if response.endswith('"') and '"' in response[:-1]:
-            # Find the last quote and remove everything after it
-            last_quote_idx = response.rfind('"')
-            if last_quote_idx > 0:
-                response = response[:last_quote_idx + 1]
-        
-        # Clean up any remaining artifacts
-        lines = [line.strip() for line in response.split("\n") if line.strip()]
-        
-        if not lines:
-            return ""
-            
-        # Take the first meaningful line/paragraph
-        cleaned_lines = []
-        for line in lines:
-            # Skip lines that look like dialogue markers
-            if any(marker.lower() in line.lower() for marker in ['user:', 'assistant:', 'human:']):
+        # Handle responses that start with ASSISTANT: - extract content after it
+        assistant_patterns = ['ASSISTANT:', 'Assistant:', 'assistant:']
+        for pattern in assistant_patterns:
+            if response.startswith(pattern):
+                # Extract content after the pattern
+                response = response[len(pattern):].strip()
                 break
-            # Skip lines that are just formatting artifacts
-            if line.startswith("(") and line.endswith(")"):
-                continue
-            cleaned_lines.append(line)
         
-        # Join lines back together
-        result = "\n".join(cleaned_lines).strip()
+        # Stop at ANY occurrence of dialogue continuation markers
+        dialogue_patterns = [
+            'User:', 'user:', 'USER:', 
+            'Human:', 'human:', 'HUMAN:',
+            'Assistant:', 'assistant:', 'ASSISTANT:',
+            '\nUser', '\nuser', '\nUSER',
+            '\nHuman', '\nhuman', '\nHUMAN',  
+            '\nAssistant', '\nassistant', '\nASSISTANT'
+        ]
         
-        # Final cleanup - remove any trailing dialogue artifacts
-        for marker in dialogue_markers:
-            if result.endswith(marker):
-                result = result[:-len(marker)].strip()
+        # Find the FIRST occurrence of any dialogue pattern and cut there
+        earliest_cut = len(response)
+        for pattern in dialogue_patterns:
+            idx = response.find(pattern)
+            if idx != -1 and idx < earliest_cut:
+                earliest_cut = idx
         
-        return result if result else response
+        # Cut at the earliest dialogue marker found
+        if earliest_cut < len(response):
+            response = response[:earliest_cut].strip()
+        
+        # Remove any trailing quotes or dialogue artifacts
+        if response.endswith('"'):
+            response = response[:-1].strip()
+        
+        # Take only the first complete sentence/paragraph
+        # Stop at double newlines (paragraph breaks) to avoid continuing
+        if '\n\n' in response:
+            response = response.split('\n\n')[0].strip()
+        
+        # If still multiple lines, take first meaningful paragraph
+        lines = [line.strip() for line in response.split('\n') if line.strip()]
+        if len(lines) > 3:  # If too many lines, likely continuing conversation
+            # Take first few lines only
+            response = '\n'.join(lines[:2]).strip()
+        
+        return response
 
     def cleanup(self) -> None:
         """Cleanup model resources"""

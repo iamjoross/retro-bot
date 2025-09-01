@@ -266,7 +266,7 @@ Always respond as DATACOM-7 speaking directly to the user."""
             logger.error(f"Failed to save chat exchange: {str(e)}")
             return context.conversation_id or "error"
 
-    def _validate_response(self, response: str) -> str:
+    def _validate_response(self, response: str, user_message: str) -> str:
         """Validate response adheres to DATACOM-7 character guidelines.
 
         Checks for and corrects inappropriate excessive capitalization

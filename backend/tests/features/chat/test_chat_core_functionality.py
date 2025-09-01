@@ -28,7 +28,7 @@ class TestDatacom7CharacterCore:
 
     def test_response_validation_handles_excessive_caps(self, chat_service):
         test_response = "THIS IS ALL CAPS TEXT WITHOUT SOUNDS"
-        validated = chat_service._validate_response(test_response)
+        validated = chat_service._validate_response(test_response, "test user message")
 
         assert isinstance(validated, str)
         assert len(validated) > 0

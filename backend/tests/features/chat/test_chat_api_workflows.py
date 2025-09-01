@@ -298,14 +298,15 @@ class TestAPIPerformanceCharacteristics:
         responses_received = []
         errors = []
 
-        def create_response(request_num):
+        def create_response(*args, **kwargs):
+            # Create a generic response that doesn't depend on order
             return ChatResponse(
-                message=f"Response {request_num} from DATACOM-7 *BEEP*",
-                conversation_id=f"conv_concurrent_{request_num}",
+                message="Concurrent response from DATACOM-7 *BEEP*",
+                conversation_id="conv_concurrent_test",
                 timestamp=datetime.now(timezone.utc),
             )
 
-        mock_service.process_chat.side_effect = [create_response(i) for i in range(5)]
+        mock_service.process_chat.return_value = create_response()
 
         def make_request(request_num):
             try:
@@ -335,7 +336,6 @@ class TestAPIPerformanceCharacteristics:
 
             for request_num, status_code, response_data in responses_received:
                 assert status_code == 200
-                assert f"Response {request_num}" in response_data["message"]
-                assert (
-                    f"conv_concurrent_{request_num}" == response_data["conversation_id"]
-                )
+                assert "Concurrent response from DATACOM-7" in response_data["message"]
+                assert "*BEEP*" in response_data["message"]
+                assert response_data["conversation_id"] == "conv_concurrent_test"
