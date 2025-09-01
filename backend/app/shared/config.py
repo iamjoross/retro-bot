@@ -1,5 +1,3 @@
-"""Shared configuration for the application"""
-
 from pydantic_settings import BaseSettings
 
 
@@ -14,7 +12,7 @@ class Settings(BaseSettings):
     TEMPERATURE: float = 0.3  # Lower for more consistent character adherence
     TOP_P: float = 0.8  # More focused responses
 
-    # Assistant Model (the one we actually use)
+    # Assistant Model
     MODEL_ASSISTANT: str = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
     # Hugging Face Configuration
@@ -22,7 +20,7 @@ class Settings(BaseSettings):
 
     # Database Configuration
     MONGODB_URL: str = "mongodb://localhost:27017"
-    DATABASE_NAME: str = "dutch_tutor"
+    DATABASE_NAME: str = "assistant"
 
     # Logging Configuration
     LOG_LEVEL: str = "INFO"
